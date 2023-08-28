@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "911047822070",
+    "project_id": "tester-d6613",
+    "storage_bucket": "tester-d6613.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911047822070:android:c2c97d68257edde49a7ad7",
+        "android_client_info": {
+          "package_name": "com.kys.broadcastapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "911047822070-oujcom4f6i9um1fhhnrcu3jrrnu19hvj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3B-PX6P8k2XPyQOjL4voBSxxfwnhKeBI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "911047822070-oujcom4f6i9um1fhhnrcu3jrrnu19hvj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/broadcastFragment">
+    <fragment
+        android:id="@+id/broadcastFragment"
+        android:name="com.kys.broadcastapp.ui.broadcast.BroadcastFragment"
+        android:label="fragment_broadcast"
+        tools:layout="@layout/fragment_broadcast" >
+        <action
+            android:id="@+id/action_broadcastFragment_to_createNewBroadcastGroupFragment"
+            app:destination="@id/createNewBroadcastGroupFragment" />
+        <action
+            android:id="@+id/action_broadcastFragment_to_chatroomFragment"
+            app:destination="@id/chatroomFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/chatroomFragment"
+        android:name="com.kys.broadcastapp.ui.chatroom.ChatroomFragment"
+        android:label="fragment_chatroom"
+        tools:layout="@layout/fragment_chatroom" >
+        <argument
+            android:name="chatroomId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_chatroomFragment_to_broadcastFragment"
+            app:destination="@id/broadcastFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createNewBroadcastGroupFragment"
+        android:name="com.kys.broadcastapp.ui.createBroadCastGroup.CreateNewBroadcastGroupFragment"
+        android:label="fragment_create_new_broadcast_group"
+        tools:layout="@layout/fragment_create_new_broadcast_group" >
+        <action
+            android:id="@+id/action_createNewBroadcastGroupFragment_to_broadcastFragment"
+            app:destination="@id/broadcastFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.kys.broadcastapp.ui.profile.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
+</navigation>
