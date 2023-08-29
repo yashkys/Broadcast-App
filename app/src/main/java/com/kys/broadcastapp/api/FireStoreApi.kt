@@ -12,6 +12,7 @@ inline fun <reified T> CollectionReference.getDocument(
 ) {
     this.document(documentId).get().addOnSuccessListener { documentSnapshot ->
         val data = documentSnapshot.toObject(T::class.java)
+        Log.d("Test", " Fetched Document for : \nCollection : ${this.id} \ndocID: $documentId \n is: $data")
         onComplete(data)
     }.addOnFailureListener { e ->
         Log.e(TAG, "Error getting document: $e")

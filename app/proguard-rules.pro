@@ -19,3 +19,13 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Keep all fields and methods in Kotlin data classes
+-keepclassmembers class * {
+    @kotlin.jvm.* <fields>;
+}
+
+# Keep the no-argument constructor in Kotlin data classes
+-keepclassmembers class * {
+    @kotlin.jvm.* <init>(...);
+}

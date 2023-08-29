@@ -62,15 +62,34 @@ class ChatroomFragment : Fragment() {
 
     private lateinit var chatroomId: String
     private lateinit var chatroomData: ChatRoom
-    private lateinit var chatroomUsersExceptCurrentUser: List<String>
+    private var chatroomUsersExceptCurrentUser = arrayListOf<String>()
 
     private var messageType: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
         viewModel = ViewModelProvider(this)[ChatroomViewModel::class.java]
         uploadViewModel = ViewModelProvider(this)[UploadViewModel::class.java]
         currentUserID = CurrentUserIDProvider.getCurrentUserId()
-        super.onCreate(savedInstanceState)
+        chatFileOptionsBinding = ChatFileOptionsBinding.inflate(layoutInflater)
+        activityResultHandlers = ActivityResultHandlers(this, uploadViewModel)
+
+        try {
+            val args = ChatroomFragmentArgs.fromBundle(requireArguments())
+            chatroomId = args.chatroomId
+            Log.d(
+                "Test",
+                "ChatroomID : $chatroomId"
+            )
+        } catch (ex: Exception) {
+            Log.e(
+                "Test",
+                "Error occurred while transferring the chatroomID from BroadcastFragment to ChatroomFragment : \n${ex.message}"
+            )
+            /* Handel the exception occurred in data passing between fragments */
+        }
+
     }
 
     override fun onCreateView(
@@ -78,26 +97,21 @@ class ChatroomFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentChatroomBinding.inflate(layoutInflater, container, false)
-        chatFileOptionsBinding = ChatFileOptionsBinding.inflate(layoutInflater)
-        activityResultHandlers = ActivityResultHandlers(this, uploadViewModel)
 
-        try {
-            val args = ChatroomFragmentArgs.fromBundle(requireArguments())
-            chatroomId = args.chatroomId
-        }catch (ex: Exception){
-            Log.d("Test", "Error occurred while transferring the chatroomID from BroadcastFragment to ChatroomFragment : \n${ex.message}")
-            /* Handel the exception occurred in data passing between fragments */
+        viewModel.chatroomData.observe(viewLifecycleOwner) { data ->
+            chatroomData = data
         }
-        viewModel.getChatroomData(chatroomId) {
-            it?.let { it1 ->
-                chatroomData = it1
-                chatroomUsersExceptCurrentUser = chatroomData.users.filter { userID ->
-                    userID != CurrentUserIDProvider.getCurrentUserId()
-                }
-            }
-        }
+        viewModel.getChatroomData(chatroomId)
+        Log.d("Test", "Opened Chatroom -> ChatroomData for id $chatroomId :  \n$chatroomData")
+
+        bottomSheetDialog = BottomSheetDialog(requireContext())
+
+
+        chatroomUsersExceptCurrentUser = chatroomData.users
+        chatroomUsersExceptCurrentUser.remove(currentUserID)
 
         binding.apply {
+
             if (chatroomUsersExceptCurrentUser.size > 1) {
                 isBroadcastChannel = true
                 tvChatroomName.text = chatroomData.name
@@ -122,8 +136,6 @@ class ChatroomFragment : Fragment() {
                 }
             }
         }
-
-        bottomSheetDialog = BottomSheetDialog(requireContext())
 
         return binding.root
     }
@@ -209,7 +221,11 @@ class ChatroomFragment : Fragment() {
                     is UploadResult.Failure -> {
                         Log.d("Test", "File Upload Failure ${status.error}")
                         llProgress.visibility = View.GONE
-                        Toast.makeText(requireContext(), "Failed to Upload the File", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            requireContext(),
+                            "Failed to Upload the File",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
 
                     is UploadResult.Cancelled -> {

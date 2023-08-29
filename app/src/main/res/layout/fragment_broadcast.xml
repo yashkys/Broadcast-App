@@ -55,7 +55,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_chatroom_list"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginBottom="8dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

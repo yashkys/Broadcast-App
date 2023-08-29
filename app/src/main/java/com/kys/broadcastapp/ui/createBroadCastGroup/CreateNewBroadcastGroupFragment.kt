@@ -53,6 +53,7 @@ class CreateNewBroadcastGroupFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        currentUserID = CurrentUserIDProvider.getCurrentUserId()
         viewModel = ViewModelProvider(this)[CreateNewBroadcastGroupViewModel::class.java]
         uploadViewModel = ViewModelProvider(this)[UploadViewModel::class.java]
     }
@@ -62,14 +63,15 @@ class CreateNewBroadcastGroupFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentCreateNewBroadcastGroupBinding.inflate(layoutInflater, container, false)
-        currentUserID = CurrentUserIDProvider.getCurrentUserId()
+        viewModel.userIDList.observe(viewLifecycleOwner) { userIds ->
+            Log.d("Test" , "Friend user Ids fetched for Current UserId: $currentUserID is : \n$userIds")
+        }
         viewModel.userList.observe(viewLifecycleOwner, Observer { users ->
             userAdapter.setAdapterList(users)
             userList.clear()
             userList.addAll(users)
         })
         viewModel.getUserList(currentUserID)
-        currentUserID = CurrentUserIDProvider.getCurrentUserId()
         activityResultHandlers = ActivityResultHandlers(this, uploadViewModel)
 
         viewModel.getCurrentUserData(currentUserID){
@@ -202,7 +204,7 @@ class CreateNewBroadcastGroupFragment : Fragment() {
                 if(TextUtils.isEmpty(groupName)){
                     etGroupName.error = getString(R.string.enter_the_group_name)
                 }else {
-                    viewModel.createBroadcastGroup(groupName, downloadUrl, selectedUserList){
+                    viewModel.createBroadcastGroup(currentUserID, groupName, downloadUrl, selectedUserList){
                         if(it){
                             Toast.makeText(requireContext(), "Created broadcast channel", Toast.LENGTH_SHORT).show()
                             Log.d("Test", "Created Broadcast Channel : $groupName")

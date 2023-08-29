@@ -13,6 +13,8 @@ import com.kys.broadcastapp.api.uploadFile
 import com.kys.broadcastapp.api.uploadFileWithCallbacks
 import com.kys.broadcastapp.data.modals.dataModals.ChatRoom
 import com.kys.broadcastapp.data.modals.dataModals.Message
+import com.kys.broadcastapp.data.modals.dataModals.ResponseBroadcastChannelListModal
+import com.kys.broadcastapp.data.modals.dataModals.ResponseFriendListDataModal
 import com.kys.broadcastapp.data.modals.dataModals.User
 import com.kys.broadcastapp.utils.FireStorageCollection
 import com.kys.broadcastapp.utils.FireStoreCollection
@@ -151,8 +153,8 @@ class FirebaseRepository @Inject constructor(
     fun fetchChatroomData(chatroomID: String, onComplete: (ChatRoom?) -> Unit) =
         chatroomCollection.getDocument<ChatRoom>(chatroomID, onComplete)
 
-    fun fetchBroadcastChannelIDList(currentUserId: String, onComplete: (List<String>?) -> Unit) =
-        broadcastChannelCollection.getDocument<List<String>>(currentUserId, onComplete)
+    fun fetchBroadcastChannelIDList(currentUserId: String, onComplete: (ResponseBroadcastChannelListModal?) -> Unit) =
+        broadcastChannelCollection.getDocument<ResponseBroadcastChannelListModal>(currentUserId, onComplete)
 
     fun getBroadcastChannelIDList(onComplete: (List<List<String>>?) -> Unit) =
         broadcastChannelCollection.getDocumentList(onComplete)
@@ -185,8 +187,8 @@ class FirebaseRepository @Inject constructor(
     fun fetchUserData(userID: String, onComplete: (User?) -> Unit) =
         userCollection.getDocument<User>(userID, onComplete)
 
-    fun fetchFriendUserIDList(userID: String, onComplete: (List<String>?) -> Unit) =
-        friendUserCollection.getDocument<List<String>?>(userID, onComplete)
+    fun fetchFriendUserIDList(userID: String, onComplete: (ResponseFriendListDataModal?) -> Unit) =
+        friendUserCollection.getDocument<ResponseFriendListDataModal>(userID, onComplete)
 
     fun getChatroomRoomID(currentUserID: String, userId: String, onComplete: (String) -> Unit) {
         getChatroomSubscribedList(userId) {
@@ -202,6 +204,8 @@ class FirebaseRepository @Inject constructor(
 
     fun createChatroom(chatRoom: ChatRoom, onComplete: (Boolean) -> Unit) =
         chatroomCollection.saveDocument(chatRoom.id,chatRoom, onComplete)
+    fun saveChatroomIdBroadcastChannel(currentUserID: String, responseBroadcastChannelListModal: ResponseBroadcastChannelListModal, onComplete: (Boolean) -> Unit) =
+        broadcastChannelCollection.saveDocument(currentUserID,responseBroadcastChannelListModal, onComplete)
 
 //    fun updateAppData(appData: AppData, onComplete: (Boolean) -> Unit) {
 //        appCollection.getDocumentID(FireStoreDocumentField.DOWNLOAD_URL, appData.download_url) {

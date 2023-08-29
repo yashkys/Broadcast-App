@@ -24,17 +24,19 @@ class BroadcastViewModel @Inject constructor() : ViewModel() {
     fun getChatroomList(currentUserId: String) {
         firebaseRepository.apply {
             fetchBroadcastChannelIDList(currentUserId) {
-                it?.let { chatroomIDList1 ->
-                    _chatroomIdList.value = chatroomIDList1
-                    val crl = arrayListOf<ChatRoom>()
-                    for (chatroomID in chatroomIDList1) {
-                        fetchChatroomData(chatroomID) { chatroomData ->
-                            chatroomData?.let { chatroomData1 ->
-                                crl.add(chatroomData1)
+                it?.let { response ->
+                    response.chatroomIds?.let{ list->
+                        _chatroomIdList.value = list
+                        val crl = arrayListOf<ChatRoom>()
+                        for (chatroomID in list) {
+                            fetchChatroomData(chatroomID) { chatroomData ->
+                                chatroomData?.let { chatroomData1 ->
+                                    crl.add(chatroomData1)
+                                    chatroomList.value = crl
+                                }
                             }
                         }
                     }
-                    chatroomList.value = crl
                 }
             }
         }

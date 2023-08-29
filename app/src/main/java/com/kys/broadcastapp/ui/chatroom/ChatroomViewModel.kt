@@ -23,6 +23,9 @@ class ChatroomViewModel @Inject constructor() : ViewModel() {
     private var _messageList = MutableLiveData<List<Message>>()
     var messageList: MutableLiveData<List<Message>> = _messageList
 
+    private var _chatroomData = MutableLiveData<ChatRoom>()
+    var chatroomData: LiveData<ChatRoom> = _chatroomData
+
     fun getMessageList(chatroomId: String) {
         firebaseRepository.apply {
             fetchMessageIDList(chatroomId) {
@@ -43,12 +46,13 @@ class ChatroomViewModel @Inject constructor() : ViewModel() {
         Log.d("Test", " Message List : ${_messageList.value}")
     }
 
-    fun getChatroomData(chatroomId: String, onComplete: (ChatRoom?) -> Unit) {
-        firebaseRepository.fetchChatroomData(chatroomId, onComplete)
+    fun getChatroomData(chatroomId: String) {
+        firebaseRepository.fetchChatroomData(chatroomId){
+            it?.let { _chatroomData.value = it }
+        }
     }
 
     fun getUserData(userId: String, onComplete: (User?) -> Unit) {
-
         firebaseRepository.getUser(userId, onComplete)
     }
 

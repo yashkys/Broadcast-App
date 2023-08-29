@@ -67,6 +67,7 @@ class BroadcastFragment : Fragment() {
 
             /* if create new Chatroom  button clicked */
             btnCreateNewBroadcastGroup.setOnClickListener {
+                Log.d("Test", "Btn createNewBroadcastGroup clicked")
                 navigateToCreateNewBroadcastGroupFragment()
             }
 
@@ -85,7 +86,7 @@ class BroadcastFragment : Fragment() {
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     val query = s.toString().trim()
-                    Log.e("Test", "Query Search Term = $query")
+                    Log.d("Test", "Query Search Term = $query")
 
                     if (query.isNotEmpty()) {
                         // Show the chatroom List Based on Searched Query

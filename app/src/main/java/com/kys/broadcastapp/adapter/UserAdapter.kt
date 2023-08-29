@@ -37,13 +37,15 @@ RecyclerView.Adapter<UserAdapter.UserItemBindViewHolder>()
 
         fun bind(item: User, position: Int) {
             binding.apply {
-                val image: String  = item.image
-                Glide
-                    .with(ivImage.context)
-                    .load(image)
-                    .centerCrop()
-                    .placeholder(R.drawable.ic_profile)
-                    .into(ivImage)
+                val image  = item.image
+                image?.let {
+                    Glide
+                        .with(ivImage.context)
+                        .load(image)
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_profile)
+                        .into(ivImage)
+                }
                 tvName.text = item.userName
 
                 llUserItemContainer.onClick {
