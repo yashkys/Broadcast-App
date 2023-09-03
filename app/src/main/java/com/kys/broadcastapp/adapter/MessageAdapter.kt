@@ -48,7 +48,9 @@ class MessageAdapter @Inject constructor() :
                     llReceive.visibility = View.GONE
                     if(item.messageType == FireStoreDocumentField.MESSAGE_TYPE_TEXT){
                         tvSentMessage.text = item.message
+                        ivSent.visibility = View.GONE
                     }else{
+                        tvSentMessage.visibility = View.GONE
                         val image: String  = item.message
                         Glide
                             .with(ivSent.context)
@@ -68,7 +70,9 @@ class MessageAdapter @Inject constructor() :
                     llSend.visibility = View.GONE
                     if(item.messageType == FireStoreDocumentField.MESSAGE_TYPE_TEXT){
                         tvReceivedMessage.text = item.message
+                        ivReceived.visibility = View.GONE
                     }else{
+                        tvReceivedMessage.visibility = View.GONE
                         val image: String  = item.message
                         Glide
                             .with(ivReceived.context)

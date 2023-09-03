@@ -13,9 +13,11 @@ import com.kys.broadcastapp.api.uploadFile
 import com.kys.broadcastapp.api.uploadFileWithCallbacks
 import com.kys.broadcastapp.data.modals.dataModals.ChatRoom
 import com.kys.broadcastapp.data.modals.dataModals.Message
-import com.kys.broadcastapp.data.modals.dataModals.ResponseBroadcastChannelListModal
-import com.kys.broadcastapp.data.modals.dataModals.ResponseFriendListDataModal
+import com.kys.broadcastapp.data.modals.responseModals.ResponseBroadcastChannelListModal
+import com.kys.broadcastapp.data.modals.responseModals.ResponseChatroomsSubscribedListModal
+import com.kys.broadcastapp.data.modals.responseModals.ResponseFriendListDataModal
 import com.kys.broadcastapp.data.modals.dataModals.User
+import com.kys.broadcastapp.data.modals.responseModals.ResponseChatroomMessageListModal
 import com.kys.broadcastapp.utils.FireStorageCollection
 import com.kys.broadcastapp.utils.FireStoreCollection
 import java.io.ByteArrayOutputStream
@@ -153,8 +155,14 @@ class FirebaseRepository @Inject constructor(
     fun fetchChatroomData(chatroomID: String, onComplete: (ChatRoom?) -> Unit) =
         chatroomCollection.getDocument<ChatRoom>(chatroomID, onComplete)
 
-    fun fetchBroadcastChannelIDList(currentUserId: String, onComplete: (ResponseBroadcastChannelListModal?) -> Unit) =
-        broadcastChannelCollection.getDocument<ResponseBroadcastChannelListModal>(currentUserId, onComplete)
+    fun fetchBroadcastChannelIDList(
+        currentUserId: String,
+        onComplete: (ResponseBroadcastChannelListModal?) -> Unit
+    ) =
+        broadcastChannelCollection.getDocument<ResponseBroadcastChannelListModal>(
+            currentUserId,
+            onComplete
+        )
 
     fun getBroadcastChannelIDList(onComplete: (List<List<String>>?) -> Unit) =
         broadcastChannelCollection.getDocumentList(onComplete)
@@ -162,27 +170,33 @@ class FirebaseRepository @Inject constructor(
     fun getChatroomIDList(onComplete: (List<List<ChatRoom>>?) -> Unit) =
         chatroomCollection.getDocumentList(onComplete)
 
-    fun getChatroomSubscribedList(currentUserID: String, onComplete: (List<String>?) -> Unit) =
-        chatroomSubscribedCollection.getDocument<List<String>>(currentUserID, onComplete)
+    fun getChatroomSubscribedList(
+        currentUserID: String,
+        onComplete: (ResponseChatroomsSubscribedListModal?) -> Unit
+    ) =
+        chatroomSubscribedCollection.getDocument<ResponseChatroomsSubscribedListModal>(
+            currentUserID,
+            onComplete
+        )
 
-    fun sendMessageInChatroom(chatroomId: String, messageID: String) {
-        chatroomCollection.saveDocument(chatroomId, messageID) {}
+    fun sendMessageInChatroom(chatroom: ChatRoom) {
+        chatroomCollection.saveDocument(chatroom.id, chatroom) {}
     }
+
     fun saveMessage(message: Message) {
         messageCollection.saveDocument(message.messageID, message) {}
     }
 
-    fun sendMessageInMessageCollection(message: Message) =
-        messageCollection.saveDocument(message.messageID, message) {}
-
     fun sendMessageInMessageCollection(message: Message, onComplete: (Boolean) -> Unit) =
-        messageCollection.saveDocument(message.messageID, message,onComplete)
+        messageCollection.saveDocument(message.messageID, message, onComplete)
 
     fun fetchMessageData(messageID: String, onComplete: (Message?) -> Unit) =
         messageCollection.getDocument<Message>(messageID, onComplete)
 
-    fun fetchMessageIDList(chatroomId: String, onComplete: (List<String>?) -> Unit) =
-        chatroomMessageCollection.getDocument<List<String>>(chatroomId, onComplete)
+    fun fetchMessageIDList(chatroomId: String, onComplete: (ResponseChatroomMessageListModal?) -> Unit) =
+        chatroomMessageCollection.getDocument<ResponseChatroomMessageListModal>(chatroomId, onComplete)
+    fun saveMessageIDList(chatroomId: String, list :ResponseChatroomMessageListModal, onComplete: (Boolean) -> Unit) =
+        chatroomMessageCollection.saveDocument(chatroomId,list, onComplete)
 
     fun fetchUserData(userID: String, onComplete: (User?) -> Unit) =
         userCollection.getDocument<User>(userID, onComplete)
@@ -192,9 +206,11 @@ class FirebaseRepository @Inject constructor(
 
     fun getChatroomRoomID(currentUserID: String, userId: String, onComplete: (String) -> Unit) {
         getChatroomSubscribedList(userId) {
-            it?.let { it1 ->
-                for (id in it1) {
+            it?.let { response ->
+                Log.d("Test", "Chatroom Subscribed response -> $response")
+                for (id in response.chatrooms!!) {
                     if (id.contains(currentUserID) && id.contains(userId)) {
+                        Log.d("Test", "Chatroom ID returned -> $id")
                         onComplete(id)
                     }
                 }
@@ -203,18 +219,21 @@ class FirebaseRepository @Inject constructor(
     } /* chatroom id for 1v1 message is of form :-  userID1_userID2 */
 
     fun createChatroom(chatRoom: ChatRoom, onComplete: (Boolean) -> Unit) =
-        chatroomCollection.saveDocument(chatRoom.id,chatRoom, onComplete)
-    fun saveChatroomIdBroadcastChannel(currentUserID: String, responseBroadcastChannelListModal: ResponseBroadcastChannelListModal, onComplete: (Boolean) -> Unit) =
-        broadcastChannelCollection.saveDocument(currentUserID,responseBroadcastChannelListModal, onComplete)
+        chatroomCollection.saveDocument(chatRoom.id, chatRoom, onComplete)
 
-//    fun updateAppData(appData: AppData, onComplete: (Boolean) -> Unit) {
-//        appCollection.getDocumentID(FireStoreDocumentField.DOWNLOAD_URL, appData.download_url) {
-//            it?.let { documentId ->
-//                appCollection.saveDocument(documentId, appData) {it1->
-//                    onComplete(it1)
-//                }
-//            }
-//        }
-//    }
+    fun saveChatroomIdBroadcastChannel(
+        currentUserID: String,
+        responseBroadcastChannelListModal: ResponseBroadcastChannelListModal,
+        onComplete: (Boolean) -> Unit
+    ) =
+        broadcastChannelCollection.saveDocument(
+            currentUserID,
+            responseBroadcastChannelListModal,
+            onComplete
+        )
+
+    fun saveChatroom(chatroomData: ChatRoom, onComplete: (Boolean) -> Unit) =
+        chatroomCollection.saveDocument(chatroomData.id, chatroomData, onComplete)
+
 
 }

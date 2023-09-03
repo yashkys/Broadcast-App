@@ -22,8 +22,8 @@
         android:label="fragment_chatroom"
         tools:layout="@layout/fragment_chatroom" >
         <argument
-            android:name="chatroomId"
-            app:argType="string" />
+            android:name="chatroomData"
+            app:argType="com.kys.broadcastapp.data.modals.dataModals.ChatRoom" />
         <action
             android:id="@+id/action_chatroomFragment_to_broadcastFragment"
             app:destination="@id/broadcastFragment" />

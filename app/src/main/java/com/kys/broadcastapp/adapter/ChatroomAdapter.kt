@@ -41,7 +41,7 @@ class ChatroomAdapter @Inject constructor() :
                     .placeholder(R.drawable.ic_profile)
                     .into(ivImage)
                 tvName.text = item.name
-                tvLastMessage.text = if (item.lastMessage?.messageType == FireStoreDocumentField.MESSAGE_TYPE_TEXT) item.lastMessage.message else "Photo"
+                tvLastMessage.text = if (item.lastMessage?.messageType == FireStoreDocumentField.MESSAGE_TYPE_TEXT) item.lastMessage!!.message else "Photo"
                 llUserList.setOnClickListener {
                     onClick(item.id)
                 }

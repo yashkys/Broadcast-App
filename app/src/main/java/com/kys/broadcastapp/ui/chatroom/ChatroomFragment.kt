@@ -16,11 +16,11 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.ServerTimestamp
 import com.kys.broadcastapp.R
 import com.kys.broadcastapp.adapter.MessageAdapter
 import com.kys.broadcastapp.data.modals.dataModals.ChatRoom
@@ -34,6 +34,7 @@ import com.kys.broadcastapp.utils.CurrentUserIDProvider
 import com.kys.broadcastapp.utils.FireStoreDocumentField
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 import java.util.UUID
 import javax.inject.Inject
@@ -77,10 +78,11 @@ class ChatroomFragment : Fragment() {
 
         try {
             val args = ChatroomFragmentArgs.fromBundle(requireArguments())
-            chatroomId = args.chatroomId
+            chatroomData = args.chatroomData
+            chatroomId = chatroomData.id
             Log.d(
                 "Test",
-                "ChatroomID : $chatroomId"
+                "In Chatroom Fragment  ->\nChatroomID : $chatroomId , \nChatroomData :$chatroomData"
             )
         } catch (ex: Exception) {
             Log.e(
@@ -98,14 +100,8 @@ class ChatroomFragment : Fragment() {
     ): View {
         binding = FragmentChatroomBinding.inflate(layoutInflater, container, false)
 
-        viewModel.chatroomData.observe(viewLifecycleOwner) { data ->
-            chatroomData = data
-        }
-        viewModel.getChatroomData(chatroomId)
-        Log.d("Test", "Opened Chatroom -> ChatroomData for id $chatroomId :  \n$chatroomData")
-
         bottomSheetDialog = BottomSheetDialog(requireContext())
-
+        bottomSheetDialog.setContentView( layoutInflater.inflate(R.layout.chat_file_options, null))
 
         chatroomUsersExceptCurrentUser = chatroomData.users
         chatroomUsersExceptCurrentUser.remove(currentUserID)
@@ -137,6 +133,17 @@ class ChatroomFragment : Fragment() {
             }
         }
 
+        //viewModel.getChatroomIdList(fetchCurrentUserID()) /* from Api */
+
+        /* fetch and observe the message list */
+        viewModel.messageList.observe(viewLifecycleOwner) { messages ->
+            messageAdapter.setAdapterList(messages)
+            messageList.clear()
+            messageList.addAll(messages)
+        }
+        viewModel.getMessageList(chatroomId)
+//            viewModel.getMessageList(fetchCurrentUserID()) /* from Api */
+
         return binding.root
     }
 
@@ -154,16 +161,6 @@ class ChatroomFragment : Fragment() {
             /* if message is clicked */
             messageAdapter.onClick = { /* Do something like copy, forward, delete, etc */ }
 
-            //viewModel.getChatroomIdList(fetchCurrentUserID()) /* from Api */
-
-            /* fetch and observe the message list */
-            viewModel.messageList.observe(viewLifecycleOwner, Observer { messages ->
-                messageAdapter.setAdapterList(messages)
-                messageList.clear()
-                messageList.addAll(messages)
-            })
-            viewModel.getMessageList(chatroomId)
-//            viewModel.getMessageList(fetchCurrentUserID()) /* from Api */
 
             btnSend.setOnClickListener {
                 val message = etMessage.text.toString().trim()
@@ -285,19 +282,23 @@ class ChatroomFragment : Fragment() {
             }
         }
 
-        bottomSheetDialog.setContentView(view)
+//        if(bottomSheetDialog)
 
 
     }
 
+    @ServerTimestamp
+    var serverTimestamp: Date? = null
     private fun getFormattedTimeStamp(): String {
-        // Generate a server timestamp
-
-        val serverTimestamp = FieldValue.serverTimestamp()
-        // Format the server timestamp to "yyyy-MM-dd HH:mm:ss"
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-
-        return dateFormat.format(serverTimestamp)
+        // serverTimestamp will automatically be populated with the server timestamp
+        if (serverTimestamp != null) {
+            // Format the server timestamp to "yyyy-MM-dd HH:mm:ss"
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+            return dateFormat.format(serverTimestamp)
+        } else {
+            // Handle the case where serverTimestamp is null
+            return "Invalid Timestamp"
+        }
     }
 
     private fun sendMessageToUsers(
@@ -306,17 +307,23 @@ class ChatroomFragment : Fragment() {
         currentUserID: String,
         formattedTimestamp: String
     ) {
+        val messageModel = Message(
+            message,
+            UUID.randomUUID().toString(),
+            formattedTimestamp,
+            messageType,
+            currentUserID,
+            false
+        )
+        Log.d("Test", "Message to be Sent : $messageModel ")
+        viewModel.updateChatroomData(chatroomData, messageModel){
+            if(it) Log.d("Test", "ChatroomData Updated")
+        }
         viewModel.sendMessageToUsers(
             currentUserID,
-            chatroomUsersExceptCurrentUser,
-            Message(
-                message,
-                UUID.randomUUID().toString(),
-                formattedTimestamp,
-                messageType,
-                currentUserID,
-                false
-            )
+            chatroomData,
+            messageModel,
+            chatroomUsersExceptCurrentUser
         )
     }
 

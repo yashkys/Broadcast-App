@@ -5,11 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.kys.broadcastapp.data.modals.dataModals.ChatRoom
-import com.kys.broadcastapp.data.modals.dataModals.ResponseBroadcastChannelListModal
+import com.kys.broadcastapp.data.modals.responseModals.ResponseBroadcastChannelListModal
 import com.kys.broadcastapp.data.modals.dataModals.User
 import com.kys.broadcastapp.repository.FirebaseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.Objects
 import java.util.UUID
 import javax.inject.Inject
 
@@ -75,7 +74,6 @@ class CreateNewBroadcastGroupViewModel @Inject constructor() : ViewModel() {
             "",
             "This is a broadcast channel.",
             selectedUserIdList,
-            arrayListOf(),
             null
         )
         firebaseRepository.apply {

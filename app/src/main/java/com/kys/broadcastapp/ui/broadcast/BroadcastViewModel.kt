@@ -21,6 +21,20 @@ class BroadcastViewModel @Inject constructor() : ViewModel() {
     private var _chatroomList = MutableLiveData<List<ChatRoom>>()
     var chatroomList: MutableLiveData<List<ChatRoom>> = _chatroomList
 
+    private var _chatroomData = MutableLiveData<ChatRoom>()
+    var chatroomData: LiveData<ChatRoom> = _chatroomData
+
+    fun getChatroomData(chatroomId: String) { /* , onComplete: (Boolean) -> Unit */
+        firebaseRepository.fetchChatroomData(chatroomId){
+            Log.d("Test", "Chatroom Data Fetched in Broadcast Fragment View Model : $it")
+            it?.let {
+                _chatroomData.value = it
+//                onComplete(true)
+            }
+//            onComplete(false)
+        }
+    }
+
     fun getChatroomList(currentUserId: String) {
         firebaseRepository.apply {
             fetchBroadcastChannelIDList(currentUserId) {

@@ -1,4 +1,4 @@
-package com.kys.broadcastapp.data.modals.dataModals
+package com.kys.broadcastapp.data.modals.responseModals
 
 import com.google.gson.annotations.SerializedName
 import com.squareup.moshi.JsonClass

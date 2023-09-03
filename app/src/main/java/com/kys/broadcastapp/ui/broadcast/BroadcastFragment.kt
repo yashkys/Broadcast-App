@@ -29,7 +29,7 @@ class BroadcastFragment : Fragment() {
     private var chatroomList = arrayListOf<ChatRoom>()
 
     private lateinit var viewModel: BroadcastViewModel
-    private lateinit var currentUserID:String
+    private lateinit var currentUserID: String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,8 +116,25 @@ class BroadcastFragment : Fragment() {
         findNavController().navigate(BroadcastFragmentDirections.actionBroadcastFragmentToCreateNewBroadcastGroupFragment())
     }
 
+    private lateinit var chatroomData: ChatRoom
     private fun navigateToChatroomFragment(chatroomId: String) {
-        findNavController().navigate(BroadcastFragmentDirections.actionBroadcastFragmentToChatroomFragment(chatroomId))
+        viewModel.chatroomData.observe(viewLifecycleOwner) { data ->
+            chatroomData = data
+            Log.d("Test", "Opened Chatroom -> ChatroomData for id $chatroomId :  \n$chatroomData")
+            findNavController().navigate(
+                BroadcastFragmentDirections.actionBroadcastFragmentToChatroomFragment(
+                    chatroomData
+                )
+            )
+        }
+        viewModel.getChatroomData(chatroomId)
+//        {
+//            if (it) {
+//                Log.e("Test", "Failed to Fetch Chatroom Data with id : $chatroomId")
+//            } else {
+//                Log.e("Test", "Failed to Fetch Chatroom Data with id : $chatroomId")
+//            }
+//        }
     }
 
 }

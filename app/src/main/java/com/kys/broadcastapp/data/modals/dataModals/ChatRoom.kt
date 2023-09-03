@@ -7,11 +7,11 @@ import java.io.Serializable
 @JsonClass(generateAdapter = true)
 data class ChatRoom(
     @SerializedName(value = "id")  val id : String= "",
-    @SerializedName(value = "name")  val name : String= "",
-    @SerializedName(value = "image")  val image : String= "",
-    @SerializedName(value = "description")  val description : String= "",
-    @SerializedName(value = "chatroomDescription")  val chatroomDescription : String= "",
-    @SerializedName(value = "users")  val users: ArrayList<String> = arrayListOf(), /* list of user_id's*/
-    @SerializedName(value = "messages")  val messages: ArrayList<String>?= arrayListOf(), /* list of message_id's*/
-    @SerializedName(value = "lastMessage")  val lastMessage: Message?= Message()
+    @SerializedName(value = "name")  var name : String= "",
+    @SerializedName(value = "image")  var image : String= "",
+    @SerializedName(value = "description")  var description : String= "",
+    @SerializedName(value = "chatroomDescription")  var chatroomDescription : String= "",
+    @SerializedName(value = "users")  var users: ArrayList<String> = arrayListOf(), /* list of user_id's*/
+//    @SerializedName(value = "messages") var messages: ArrayList<String>?= arrayListOf(), /* list of message_id's*/
+    @SerializedName(value = "lastMessage")  var lastMessage: Message?= Message()
 ): Serializable

@@ -51,7 +51,8 @@
         </LinearLayout>
 
         <LinearLayout
-
+            android:id="@+id/layout_unread_count"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="64dp"
             android:layout_gravity="center|end"
