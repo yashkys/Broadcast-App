@@ -26,4 +26,5 @@
     <string name="please_select_more_than_2_people">Please select more than 2 people.</string>
     <string name="enter_the_group_name">Enter the group name</string>
     <string name="select_the_users_to_add_in_the_broadcast_channel">Select the users to add in the broadcast channel</string>
+    <string name="close_button">close button</string>
 </resources>

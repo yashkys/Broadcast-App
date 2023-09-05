@@ -22,7 +22,7 @@ class ChatroomAdapter @Inject constructor() :
     }
 
     fun setAdapterList(newList: List<ChatRoom>) {
-        Log.d("Test", "In Adapter\n ==> Data in List<ChatRoom> :: $newList")
+        Log.d("Test", "In Chatroom Adapter\n ==> Data in List<ChatRoom> :: $newList")
         chatroomList = newList
         notifyItemRangeChanged(0, chatroomList.size)
     }

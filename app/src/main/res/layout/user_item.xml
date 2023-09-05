@@ -42,14 +42,14 @@
 
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/user_item_selected"
-            android:visibility="gone"
-            android:layout_gravity="end"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:contentDescription="@string/user_item_is_selected"
-            android:src="@drawable/baseline_check_circle_outline_24" />
+<!--        <ImageView-->
+<!--            android:id="@+id/user_item_selected"-->
+<!--            android:visibility="gone"-->
+<!--            android:layout_gravity="end"-->
+<!--            android:layout_width="48dp"-->
+<!--            android:layout_height="48dp"-->
+<!--            android:contentDescription="@string/user_item_is_selected"-->
+<!--            android:src="@drawable/baseline_check_circle_outline_24" />-->
     </FrameLayout>
 
 

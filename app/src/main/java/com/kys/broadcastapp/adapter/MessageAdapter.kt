@@ -27,7 +27,7 @@ class MessageAdapter @Inject constructor() :
     }
 
     fun setAdapterList(newList: List<Message>) {
-        Log.d("Test", "In Adapter\n ==> Data in List<Message> :: $newList")
+        Log.d("Test", "In Message Adapter\n ==> Data in List<Message> :: $newList")
         messageList = newList
         notifyItemRangeChanged(0, messageList.size)
     }

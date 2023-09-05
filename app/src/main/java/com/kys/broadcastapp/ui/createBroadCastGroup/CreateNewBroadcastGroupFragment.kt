@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.kys.broadcastapp.R
+import com.kys.broadcastapp.adapter.SelectedUserAdapter
 import com.kys.broadcastapp.adapter.UserAdapter
 import com.kys.broadcastapp.data.modals.dataModals.User
 import com.kys.broadcastapp.data.modals.responseModals.UploadResult
@@ -43,6 +44,8 @@ class CreateNewBroadcastGroupFragment : Fragment() {
 
     @Inject
     lateinit var userAdapter: UserAdapter
+    @Inject
+    lateinit var selectedUserAdapter: SelectedUserAdapter
 
     private var userList = arrayListOf<User>()
     private var selectedUserList = arrayListOf<User>()
@@ -72,12 +75,14 @@ class CreateNewBroadcastGroupFragment : Fragment() {
             userList.addAll(users)
         })
         viewModel.getUserList(currentUserID)
+        selectedUserAdapter.setAdapterList(arrayListOf())
         activityResultHandlers = ActivityResultHandlers(this, uploadViewModel)
 
         viewModel.getCurrentUserData(currentUserID){
             it?.let { currUser->
                 currentUserData = currUser
-                selectedUserList.add(currUser)
+                selectedUserList.add(currentUserData)
+                selectedUserAdapter.setAdapterList(selectedUserList)
             }
         }
 
@@ -90,8 +95,10 @@ class CreateNewBroadcastGroupFragment : Fragment() {
 
             rvSelectedUserList.adapter = userAdapter
             rvUserFriendList.adapter = userAdapter
+            rvSelectedUserFriendList.adapter = selectedUserAdapter
 
             btnAddDetails.setOnClickListener {
+
                 if(selectedUserList.size>2){
                     layoutCreateBroadcastGroupWithData.visibility = View.VISIBLE
                     layoutSelectUsersFromIst.visibility = View.GONE
@@ -195,8 +202,26 @@ class CreateNewBroadcastGroupFragment : Fragment() {
             })
 
             userAdapter.onClick = { it->
-                if (it.second ) selectedUserList.add(it.first)
-                else selectedUserList.remove(it.first)
+                selectedUserList.add(it)
+                userList.remove(it)
+                Log.d("test", "Item clicked -> $it ")
+//                userAdapter.updateAdapterList(it,false)
+//                selectedUserAdapter.updateAdapterList(it,true)
+//                userAdapter.setAdapterList(userList)
+
+                selectedUserAdapter.setAdapterList(selectedUserList)
+            }
+            selectedUserAdapter.onClick = { nullableUser->
+                nullableUser?.let {
+                    Log.d("test", "Item clicked -> $it ")
+                    selectedUserList.remove(it)
+                    userList.add(it)
+//                    userAdapter.updateAdapterList(it,true)
+//                    selectedUserAdapter.updateAdapterList(it,false)
+//                    selectedUserAdapter.setAdapterList(selectedUserList)
+
+                    userAdapter.setAdapterList(userList)
+                }
             }
 
             btnCreateNewBroadcastGroup.setOnClickListener {
